@@ -3,20 +3,24 @@ import pytest
 
 @pytest.yield_fixture()
 def setUp():
+    
     print("Conftest method setUp")
     yield
     print("Conftest method tearDown")
 
 
-@pytest.yield_fixture(scope="module")
-def oneTimeSetUp(browser, osType):
+@pytest.yield_fixture(scope="class")
+def oneTimeSetUp(request, browser):
+
     print("Conftest one time method setUp")
     if browser == 'firefox':
+        value = 10
         print("Tests are running on FireFox browser")
-    elif browser == 'chrome':
-        print("Tests are running on Chrome browser")
     else:
-        print("Please, define a browser which tests would run")
+        value = 20
+        print("Tests are running on Chrome browser")
+    if request.cls is not None:
+        request.cls.value = value
     yield
     print("Conftest one time method tearDown")
 
